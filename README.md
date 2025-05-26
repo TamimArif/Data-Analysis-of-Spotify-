@@ -1,4 +1,4 @@
-# Real Spotify Dataset Analysis P-6
+# Real Spotify Dataset Analysis and query optimization P-6
 Project Category: Advanced
 [Click Here to get Dataset](https://www.kaggle.com/datasets/sanjanchaudhari/spotify-dataset)
 
