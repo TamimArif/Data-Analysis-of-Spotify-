@@ -1,4 +1,4 @@
-# Data Analysis on real Spotify data set P-6
+# Real Spotify Dataset Analysis P-6
 Project Category: Advanced
 [Click Here to get Dataset](https://www.kaggle.com/datasets/sanjanchaudhari/spotify-dataset)
 
@@ -84,30 +84,49 @@ In advanced stages, the focus shifts to improving query performance. Some optimi
 
 ### Advanced Level
 1. Find the top 3 most-viewed tracks for each artist using window functions.
+```
+SELECT TRACK , ARTIST , VIEWS ,  R1.RANK FROM
+(SELECT TRACK , ARTIST , VIEWS ,
+DENSE_RANK() OVER(PARTITION BY ARTIST ORDER BY VIEWS DESC) AS RANK
+FROM SPOTIFY ) R1
+WHERE R1.RANK < 4
+```
 2. Write a query to find tracks where the liveness score is above the average.
-3. **Use a `WITH` clause to calculate the difference between the highest and lowest energy values for tracks in each album.**
+```
+SELECT DISTINCT TRACK FROM SPOTIFY 
+WHERE LIVENESS > (SELECT AVG(LIVENESS) FROM SPOTIFY)
+```
+4. **Use a `WITH` clause to calculate the difference between the highest and lowest energy values for tracks in each album.**
 ```sql
-WITH cte
-AS
-(SELECT 
-	album,
-	MAX(energy) as highest_energy,
-	MIN(energy) as lowest_energery
-FROM spotify
-GROUP BY 1
+WITH CTE AS (
+SELECT MAX(ENERGY) AS HIGH , MIN(ENERGY) AS LOW FROM SPOTIFY
 )
-SELECT 
-	album,
-	highest_energy - lowest_energery as energy_diff
-FROM cte
-ORDER BY 2 DESC
+
+SELECT HIGH - LOW AS DIFFERENCE
+FROM CTE
 ```
    
-5. Find tracks where the energy-to-liveness ratio is greater than 1.2.
-6. Calculate the cumulative sum of likes for tracks ordered by the number of views, using window functions.
+4. Find tracks where the energy-to-liveness ratio is greater than 1.2.
+```
+WITH RATIO AS (
+SELECT DISTINCT ALBUM , TRACK , (ENERGY/LIVENESS) AS ENERGY_TO_LIVE_RATIO 
+FROM SPOTIFY
+)
+SELECT * FROM RATIO 
+WHERE ENERGY_TO_LIVE_RATIO > 1.2
 
+SELECT DISTINCT album, track, (energy / liveness) AS energy_to_live_ratio
+FROM spotify
+WHERE (energy / liveness) > 1.2;
+```
+5. Calculate the cumulative sum of likes for tracks ordered by the number of views, using window functions.
+```
+SELECT ARTIST, TRACK, VIEWS, LIKES,
+       SUM(LIKES) OVER (PARTITION BY ARTIST ORDER BY VIEWS) AS CUMULATIVE_LIKES_PER_ARTIST
+FROM SPOTIFY;
+```
 
-Here’s an updated section for your **Spotify Advanced SQL Project and Query Optimization** README, focusing on the query optimization task you performed. You can include the specific screenshots and graphs as described.
+Here’s an updated section for your **Real Spotify Dataset Analysiso** README, focusing on the query optimization task you performed. You can include the specific screenshots and graphs as described.
 
 ---
 
